@@ -21,18 +21,18 @@ Checkout the video overview:
 
 Ensure the following packages are installed on the workstation that controls the Kubernetes cluster: git, python2.7, pip, [kubectl](https://github.com/kubernetes/kubernetes/releases) v1.2+.
 
-Clone this repo: `git clone https://github.com/stackanetes/stackanetes` and move into the kolla directory `cd stackanetes`.
+Clone this repo: `git clone https://github.com/stackanetes/stackanetes` and move into the stakenetes directory `cd stackanetes`.
 
 Install all python dependencies from requirements.txt and generate the `etc/kolla-k8s` config directory.
 
-```
-sudo pip install ansible
-pip install -r requirements.txt
-python setup.py build && python setup.py install
-sudo ./generate_config_file_sample.sh
+``` sudo pip install ansible
+sudo pip install -r requirements.txt
+python setup.py build
+sudo python setup.py install
+./generate_config_file_sample.sh
 ```
 
-Now, set the following variables in /etc/kolla-k8s/kolla-k8s.conf:
+Now, set the following variables in etc/kolla-k8s/kolla-k8s.conf:
 
 ```
 [k8s]
@@ -45,7 +45,7 @@ deployment_id = root
 host = 10.10.10.11:30000 // this will be the NodePort of the running zookeeper after you deploy it, per below
 ```
 
-In /etc/kolla-k8s/globals.yml change `enable_horizon` to yes and set the name of host interface for compute-node and network node:
+In etc/kolla-k8s/globals.yml change `enable_horizon` to yes and set the name of host interface for compute-node and network node:
 ```
 ####################
 Networking options
@@ -119,13 +119,14 @@ options ndots:5
 First you must deploy zookeeper:
 
 ```
-kolla-k8s --config-dir /etc/kolla-k8s run zookeeper
+kolla-k8s --config-dir etc/kolla-k8s run zookeeper
 ```
+Verify that zookeeper is running and accessible from the machine via IP addresses specified in etc/kolla-k8s/kolla-k8s.conf file
 
 Then you can run everything else:
 
 ```
-kolla-k8s --config-dir /etc/kolla-k8s run all
+kolla-k8s --config-dir etc/kolla-k8s run all
 ```
 
 If you run into errors, run with the --debug flag for additional information:
