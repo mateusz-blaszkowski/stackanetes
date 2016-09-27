@@ -22,6 +22,7 @@ kpm.package({
       image: {
         base: "quay.io/stackanetes/stackanetes-%s:barcelona",
         init: $.variables.deployment.image.base % "kolla-toolbox",
+        post: $.variables.deployment.image.base % "kolla-toolbox",
       },
     },
 
@@ -30,6 +31,14 @@ kpm.package({
 
       port: {
         api: 6385,
+      },
+
+      ingress: {
+        enabled: true,
+        host: "%s.openstack.cluster",
+        port: 30080,
+
+        named_host: $.variables.network.ingress.host % "image",
       },
     },
 
@@ -73,11 +82,25 @@ kpm.package({
       type: "configmap",
     },
 
+    {
+      file: "configmaps/post.sh.yaml.j2",
+      template: (importstr "templates/configmaps/post.sh.yaml.j2"),
+      name: "ironic-postsh",
+      type: "configmap",
+    },
+
     // Init.
     {
       file: "init.yaml.j2",
-      template: (importstr "templates/init.yaml.j2"),
+      template: (importstr "templates/jobs/init.yaml.j2"),
       name: "ironic-init",
+      type: "job",
+    },
+
+    {
+      file: "post.yaml.j2",
+      template: (importstr "templates/jobs/post.yaml.j2"),
+      name: "ironic-post",
       type: "job",
     },
   ],
