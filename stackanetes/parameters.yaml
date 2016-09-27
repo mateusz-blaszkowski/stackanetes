@@ -32,7 +32,7 @@ network:
     # should be possible using simple domains.
     # Modifying this after the initial deployment
     # requires to manually override the Keystone endpoints.
-    enabled: true
+    enabled: false
     # Base path and port for external access.
     # '%s' is replaced by the service name.
     # Modifying this after the initial deployment
