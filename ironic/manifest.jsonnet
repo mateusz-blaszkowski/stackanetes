@@ -23,6 +23,8 @@ kpm.package({
         base: "quay.io/stackanetes/stackanetes-%s:barcelona",
         init: $.variables.deployment.image.base % "kolla-toolbox",
         post: $.variables.deployment.image.base % "kolla-toolbox",
+        # TODO:
+        api: "10.91.96.87:5000/debian-source-ironic-api:mateuszb-ironic",
       },
     },
 
@@ -43,7 +45,7 @@ kpm.package({
     },
 
     database: {
-      address: "mariadb-galera",
+      address: "mariadb",
       port: 3306,
       root_user: "root",
       root_password: "password",
@@ -65,6 +67,21 @@ kpm.package({
       ironic_user: "ironic",
       ironic_password: "password",
       ironic_region_name: "RegionOne",
+    },
+
+    glance: {
+      api_url: "http://glance-api:9292",
+    },
+
+    neutron: {
+      api_url: "http://neutron-server:9696",
+      metadata_secret: "password",
+    },
+
+    rabbitmq: {
+      address: "rabbitmq",
+      admin_user: "rabbitmq",
+      admin_password: "password",
     },
 
     misc: {
@@ -89,6 +106,20 @@ kpm.package({
       type: "configmap",
     },
 
+    {
+      file: "configmaps/start.sh.yaml.j2",
+      template: (importstr "templates/configmaps/start.sh.yaml.j2"),
+      name: "ironic-startsh",
+      type: "configmap",
+    },
+
+    {
+      file: "configmaps/ironic-api.conf.yaml.j2",
+      template: (importstr "templates/configmaps/ironic-api.conf.yaml.j2"),
+      name: "ironic-apiconf",
+      type: "configmap",
+    },
+
     // Init.
     {
       file: "init.yaml.j2",
@@ -102,6 +133,22 @@ kpm.package({
       template: (importstr "templates/jobs/post.yaml.j2"),
       name: "ironic-post",
       type: "job",
+    },
+
+    // Deployments.
+    {
+      file: "api/deployment.yaml.j2",
+      template: (importstr "templates/api/deployment.yaml.j2"),
+      name: "ironic-api",
+      type: "deployment",
+    },
+
+    // Services.
+    {
+      file: "api/service.yaml.j2",
+      template: (importstr "templates/api/service.yaml.j2"),
+      name: "ironic-api",
+      type: "service",
     },
   ],
 
