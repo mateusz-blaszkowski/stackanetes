@@ -25,6 +25,7 @@ kpm.package({
         post: $.variables.deployment.image.base % "kolla-toolbox",
         # TODO:
         api: "10.91.96.87:5000/debian-source-ironic-api:mateuszb-ironic",
+        db_sync: "10.91.96.87:5000/debian-source-ironic-api:mateuszb-ironic",
       },
     },
 
@@ -114,9 +115,16 @@ kpm.package({
     },
 
     {
-      file: "configmaps/ironic-api.conf.yaml.j2",
-      template: (importstr "templates/configmaps/ironic-api.conf.yaml.j2"),
-      name: "ironic-apiconf",
+      file: "configmaps/db-sync.sh.yaml.j2",
+      template: (importstr "templates/configmaps/db-sync.sh.yaml.j2"),
+      name: "ironic-dbsyncsh",
+      type: "configmap",
+    },
+
+    {
+      file: "configmaps/ironic.conf.yaml.j2",
+      template: (importstr "templates/configmaps/ironic.conf.yaml.j2"),
+      name: "ironic-conf",
       type: "configmap",
     },
 
@@ -125,6 +133,13 @@ kpm.package({
       file: "init.yaml.j2",
       template: (importstr "templates/jobs/init.yaml.j2"),
       name: "ironic-init",
+      type: "job",
+    },
+
+    {
+      file: "db-sync.yaml.j2",
+      template: (importstr "templates/jobs/db-sync.yaml.j2"),
+      name: "ironic-db-sync",
       type: "job",
     },
 
