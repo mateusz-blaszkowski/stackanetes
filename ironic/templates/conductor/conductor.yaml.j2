@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+spec:
+  replicas: {{ deployment.replicas }}
+  template:
+    metadata:
+      labels:
+        app: ironic-conductor
+    spec:
+      nodeSelector:
+        {{ deployment.control_node_label }}: enabled
+      # TODO(DTadrzak): it must be removed in future
+      securityContext:
+        runAsUser: 0
+      containers:
+        - name: ironic-conductor
+          image: {{ deployment.image.conductor }}
+          imagePullPolicy: Always
+          # TODO(DTadrzak): it must be removed in future
+          securityContext:
+            privileged: true
+          env:
+            - name: INTERFACE_NAME
+              value: "eth0"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: COMMAND
+              value: "ironic-conductor"
+            - name: DEPENDENCY_JOBS
+              value: "ironic-db-sync"
+            - name: DEPENDENCY_SERVICE
+              value: "rabbitmq"
+            - name: DEPENDENCY_CONFIG
+              value: "/etc/ironic/ironic.conf"
+          volumeMounts:
+            - name: ironicconf
+              mountPath: /configmaps/ironic.conf
+      volumes:
+        - name: ironicconf
+          configMap:
+            name: ironic-conf

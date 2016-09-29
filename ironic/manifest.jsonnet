@@ -26,6 +26,7 @@ kpm.package({
         # TODO:
         api: "10.91.96.87:5000/debian-source-ironic-api:mateuszb-ironic",
         db_sync: "10.91.96.87:5000/debian-source-ironic-api:mateuszb-ironic",
+        conductor: "10.91.96.87:5000/debian-source-ironic-conductor:mateuszb-ironic",
       },
     },
 
@@ -155,6 +156,13 @@ kpm.package({
       file: "api/deployment.yaml.j2",
       template: (importstr "templates/api/deployment.yaml.j2"),
       name: "ironic-api",
+      type: "deployment",
+    },
+
+    {
+      file: "conductor/conductor.yaml.j2",
+      template: (importstr "templates/conductor/conductor.yaml.j2"),
+      name: "ironic-conductor",
       type: "deployment",
     },
 
