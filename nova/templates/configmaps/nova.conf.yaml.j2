@@ -8,8 +8,6 @@ data:
     vif_plugging_is_fatal = False
     vif_plugging_timeout = 10
     default_ephemeral_format = ext3
-    scheduler_host_subset_size = 30
-    ram_allocation_ratio=1.0
     disk_allocation_ratio=1.0
     cpu_allocation_ratio=8.0
 
@@ -29,13 +27,40 @@ data:
     use_neutron = True
     security_group_api = neutron
     network_api_class = nova.network.neutronv2.api.API
-    # TODO(DTadrzak): FIX ME
-    firewall_driver = nova.virt.firewall.NoopFirewallDriver
+
     linuxnet_interface_driver = nova.network.linux_net.LinuxOVSInterfaceDriver
 
     allow_resize_to_same_host = true
 
+    {% if deployment.ironic_compute.enabled %}
+    firewall_driver = nova.virt.firewall.NoopFirewallDriver
+    compute_driver = ironic.IronicDriver
+    scheduler_host_manager = ironic_host_manager
+    ram_allocation_ratio = 1.0
+    reserved_host_memory_mb = 0
+    scheduler_use_baremetal_filters = True
+    scheduler_tracks_instance_changes = False
+    scheduler_host_subset_size = 9999999
+
+    [ironic]
+    admin_username = ironic
+    admin_password = IRONIC_PASSWORD
+    admin_url = {{ keystone.auth_url }}
+    # TODO:
+    # admin_tenant_name=service
+    api_endpoint={{ deployment.ironic_compute.api_url }}
+
+    {% else %}
+    # TODO(DTadrzak): FIX ME
+    firewall_driver = nova.virt.firewall.NoopFirewallDriver
     compute_driver = libvirt.LibvirtDriver
+    scheduler_host_manager = host_manager
+    ram_allocation_ratio = 1.0
+    reserved_host_memory_mb = 512
+    scheduler_use_baremetal_filters = False
+    scheduler_tracks_instance_changes = True
+    scheduler_host_subset_size = 30
+    {% endif %}
 
     # Though my_ip is not used directly, lots of other variables use $my_ip
     my_ip = {{ network.ip_address }}
