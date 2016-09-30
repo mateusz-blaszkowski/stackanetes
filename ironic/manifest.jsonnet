@@ -17,6 +17,7 @@ kpm.package({
   variables: {
     deployment: {
       control_node_label: "openstack-control-plane",
+      compute_node_label: "openstack-ironic-compute-node",
       replicas: 1,
 
       image: {
@@ -27,6 +28,7 @@ kpm.package({
         api: "10.91.96.87:5000/debian-source-ironic-api:mateuszb-ironic",
         db_sync: "10.91.96.87:5000/debian-source-ironic-api:mateuszb-ironic",
         conductor: "10.91.96.87:5000/debian-source-ironic-conductor:mateuszb-ironic",
+        compute: "10.91.96.87:5000/debian-source-nova-compute-ironic:mateuszb-ironic",
       },
     },
 
@@ -35,6 +37,14 @@ kpm.package({
 
       port: {
         api: 6385,
+      },
+
+      api_url: "http://%s:6385/v1" % $.variables.network.ip_address,
+
+      dns:  {
+        servers: ["10.3.0.10"],
+        kubernetes_domain: "cluster.local",
+        other_domains: "",
       },
 
       ingress: {
@@ -55,6 +65,11 @@ kpm.package({
       ironic_user: "ironic",
       ironic_password: "password",
       ironic_database_name: "ironic",
+
+      nova_user: "nova",
+      nova_password: "password",
+      nova_database_name: "nova",
+      nova_api_database_name: "nova_api"
     },
 
     keystone: {
@@ -69,6 +84,12 @@ kpm.package({
       ironic_user: "ironic",
       ironic_password: "password",
       ironic_region_name: "RegionOne",
+
+      nova_user: "nova",
+      nova_password: "password",
+
+      neutron_user: "neutron",
+      neutron_password: "password",
     },
 
     glance: {
@@ -129,6 +150,20 @@ kpm.package({
       type: "configmap",
     },
 
+    {
+      file: "configmaps/nova-compute-ironic.sh.yaml.j2",
+      template: (importstr "templates/configmaps/nova-compute-ironic.sh.yaml.j2"),
+      name: "nova-compute-ironicsh",
+      type: "configmap",
+    },
+
+    {
+      file: "configmaps/resolv.conf.yaml.j2",
+      template: (importstr "templates/configmaps/resolv.conf.yaml.j2"),
+      name: "nova-resolvconf",
+      type: "configmap",
+    },
+
     // Init.
     {
       file: "init.yaml.j2",
@@ -164,6 +199,14 @@ kpm.package({
       template: (importstr "templates/conductor/conductor.yaml.j2"),
       name: "ironic-conductor",
       type: "deployment",
+    },
+
+    // Daemonsets.
+    {
+      file: "compute/daemonset.yaml.j2",
+      template: (importstr "templates/compute/daemonset.yaml.j2"),
+      name: "nova-compute-ironic",
+      type: "daemonset",
     },
 
     // Services.
