@@ -57,6 +57,10 @@ kpm.package({
       },
     },
 
+    ironic: {
+      enabled: false,
+    },
+
     database: {
       address: "mariadb",
       port: 3306,
