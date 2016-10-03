@@ -47,13 +47,18 @@ spec:
               mountPath: /configmaps/nova-compute-ironic.sh
             - name: resolvconf
               mountPath: /configmaps/resolv.conf
+            - mountPath: /var/lib/nova
+              name: varlibnovaironic
       volumes:
         - name: novaconf
           configMap:
-            name: nova-novaconf
+            name: ironic-novaconf
         - name: novacomputeironicsh
           configMap:
             name: nova-compute-ironicsh
         - name: resolvconf
           configMap:
-            name: nova-resolvconf
+            name: ironic-resolvconf
+        - name: varlibnovaironic
+          hostPath:
+            path: /var/lib/nova/ironic

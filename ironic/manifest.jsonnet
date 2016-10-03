@@ -160,7 +160,14 @@ kpm.package({
     {
       file: "configmaps/resolv.conf.yaml.j2",
       template: (importstr "templates/configmaps/resolv.conf.yaml.j2"),
-      name: "nova-resolvconf",
+      name: "ironic-resolvconf",
+      type: "configmap",
+    },
+
+    {
+      file: "configmaps/nova.conf.yaml.j2",
+      template: (importstr "templates/configmaps/nova.conf.yaml.j2"),
+      name: "ironic-novaconf",
       type: "configmap",
     },
 

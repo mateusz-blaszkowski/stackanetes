@@ -39,12 +39,11 @@ data:
     scheduler_host_subset_size = 9999999
 
     [ironic]
-    admin_username = ironic
-    admin_password = IRONIC_PASSWORD
-    admin_url = {{ keystone.auth_url }}
-    # TODO:
-    # admin_tenant_name=service
-    api_endpoint={{ network.api_url }}
+    admin_username = {{ keystone.ironic_user }}
+    admin_password = {{ keystone.ironic_password }}
+    admin_url = {{ keystone.auth_url }}/v2.0
+    admin_tenant_name = service
+    api_endpoint = http://ironic-api:{{ network.port.api }}/v1
 
     # Though my_ip is not used directly, lots of other variables use $my_ip
     my_ip = {{ network.ip_address }}
