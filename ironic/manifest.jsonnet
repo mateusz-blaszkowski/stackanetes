@@ -29,6 +29,7 @@ kpm.package({
         db_sync: "10.91.96.87:5000/debian-source-ironic-api:mateuszb-ironic",
         conductor: "10.91.96.87:5000/debian-source-ironic-conductor:mateuszb-ironic",
         compute: "10.91.96.87:5000/debian-source-nova-compute-ironic:mateuszb-ironic",
+        ironic_pxe: "10.91.96.87:5000/debian-source-ironic-pxe:mateuszb-ironic",
       },
     },
 
@@ -140,6 +141,13 @@ kpm.package({
       file: "configmaps/db-sync.sh.yaml.j2",
       template: (importstr "templates/configmaps/db-sync.sh.yaml.j2"),
       name: "ironic-dbsyncsh",
+      type: "configmap",
+    },
+
+    {
+      file: "configmaps/ironic-pxe.sh.yaml.j2",
+      template: (importstr "templates/configmaps/ironic-pxe.sh.yaml.j2"),
+      name: "ironic-pxesh",
       type: "configmap",
     },
 

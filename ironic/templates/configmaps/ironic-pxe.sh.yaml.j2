@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  ironic-pxe.sh: |+
+    #!/bin/bash
+    set -ex
+
+    for pxe_file in /var/lib/tftpboot/pxelinux.0 /var/lib/tftpboot/chain.c32 /usr/lib/syslinux/pxelinux.0 \
+                    /usr/lib/syslinux/chain.c32 /usr/lib/PXELINUX/pxelinux.0 \
+                    /usr/lib/syslinux/modules/bios/chain.c32; do
+        if [[ -e "$pxe_file" ]]; then
+            cp "$pxe_file" /tftpboot
+        fi
+    done
+
+    mkdir -p /tftpboot/pxelinux.cfg
+    echo "default menu.c32" > /tftpboot/pxelinux.cfg/default
+    echo "prompt 0" >> /tftpboot/pxelinux.cfg/default
+    echo "timeout 5" >> /tftpboot/pxelinux.cfg/default
+    echo "ONTIMEOUT local" >> /tftpboot/pxelinux.cfg/default
+    echo "MENU TITLE Main Menu" >> /tftpboot/pxelinux.cfg/default
+    echo "LABEL local" >> /tftpboot/pxelinux.cfg/default
+    echo "MENU LABEL Boot local hard drive" >> /tftpboot/pxelinux.cfg/default
+    echo "LOCALBOOT 0" >> /tftpboot/pxelinux.cfg/default
+
+    /usr/sbin/in.tftpd --verbose --foreground --user ironic --address 0.0.0.0:69 --map-file /map-file /tftpboot
