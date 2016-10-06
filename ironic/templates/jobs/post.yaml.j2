@@ -28,9 +28,7 @@ spec:
             - name: COMMAND
               value: "bash /tmp/post.sh"
             - name: DEPENDENCY_SERVICE
-              # value: "keystone-api,ironic-api"
-              # TODO: dependency on ironic api temporarily removed
-              value: "keystone-api"
+              value: "keystone-api,ironic-api"
             - name: DEPENDENCY_CONFIG
               value: "/tmp/post.sh"
             - name: ANSIBLE_LIBRARY

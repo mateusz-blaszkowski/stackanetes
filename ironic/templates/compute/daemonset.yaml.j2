@@ -33,29 +33,24 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: COMMAND
-              value: "bash /tmp/nova-compute-ironic.sh"
+              value: "nova-compute"
             - name: DEPENDENCY_JOBS
               value: "ironic-init,ironic-post"
             - name: DEPENDENCY_SERVICE
               value: "keystone-api,glance-api,nova-api"
             - name: DEPENDENCY_CONFIG
-              value: "/etc/nova/nova.conf,/tmp/nova-compute-ironic.sh,/etc/resolv.conf"
+              value: "/etc/nova/nova.conf,/etc/resolv.conf"
           volumeMounts:
             - name: novaconf
               mountPath: /configmaps/nova.conf
-            - name: novacomputeironicsh
-              mountPath: /configmaps/nova-compute-ironic.sh
             - name: resolvconf
               mountPath: /configmaps/resolv.conf
-            - mountPath: /var/lib/nova
-              name: varlibnovaironic
+            - name: varlibnovaironic
+              mountPath: /var/lib/nova
       volumes:
         - name: novaconf
           configMap:
             name: ironic-novaconf
-        - name: novacomputeironicsh
-          configMap:
-            name: nova-compute-ironicsh
         - name: resolvconf
           configMap:
             name: ironic-resolvconf

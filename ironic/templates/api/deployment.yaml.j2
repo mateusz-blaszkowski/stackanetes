@@ -28,13 +28,13 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: COMMAND
-              value: "bash /tmp/start.sh"
+              value: "ironic-api"
             - name: DEPENDENCY_JOBS
               value: "ironic-init"
             - name: DEPENDENCY_SERVICE
               value: "mariadb,rabbitmq,keystone-api"
             - name: DEPENDENCY_CONFIG
-              value: "/etc/ironic/ironic.conf,/tmp/start.sh"
+              value: "/etc/ironic/ironic.conf"
           ports:
             - containerPort: {{ network.port.api }}
           readinessProbe:
@@ -43,16 +43,11 @@ spec:
           volumeMounts:
             - name: ironicconf
               mountPath: /configmaps/ironic.conf
-            - name: startsh
-              mountPath: /configmaps/start.sh
             - name: etcironic
               mountPath: /etc/ironic
       volumes:
         - name: ironicconf
           configMap:
             name: ironic-conf
-        - name: startsh
-          configMap:
-            name: ironic-startsh
         - name: etcironic
           emptyDir: {}

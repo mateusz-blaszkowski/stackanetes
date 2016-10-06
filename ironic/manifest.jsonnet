@@ -22,6 +22,7 @@ kpm.package({
 
       image: {
         base: "quay.io/stackanetes/stackanetes-%s:barcelona",
+
         init: $.variables.deployment.image.base % "kolla-toolbox",
         post: $.variables.deployment.image.base % "kolla-toolbox",
         # TODO:
@@ -131,20 +132,6 @@ kpm.package({
     },
 
     {
-      file: "configmaps/start.sh.yaml.j2",
-      template: (importstr "templates/configmaps/start.sh.yaml.j2"),
-      name: "ironic-startsh",
-      type: "configmap",
-    },
-
-    {
-      file: "configmaps/db-sync.sh.yaml.j2",
-      template: (importstr "templates/configmaps/db-sync.sh.yaml.j2"),
-      name: "ironic-dbsyncsh",
-      type: "configmap",
-    },
-
-    {
       file: "configmaps/ironic-pxe.sh.yaml.j2",
       template: (importstr "templates/configmaps/ironic-pxe.sh.yaml.j2"),
       name: "ironic-pxesh",
@@ -155,13 +142,6 @@ kpm.package({
       file: "configmaps/ironic.conf.yaml.j2",
       template: (importstr "templates/configmaps/ironic.conf.yaml.j2"),
       name: "ironic-conf",
-      type: "configmap",
-    },
-
-    {
-      file: "configmaps/nova-compute-ironic.sh.yaml.j2",
-      template: (importstr "templates/configmaps/nova-compute-ironic.sh.yaml.j2"),
-      name: "nova-compute-ironicsh",
       type: "configmap",
     },
 

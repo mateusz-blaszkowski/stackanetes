@@ -23,22 +23,17 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: COMMAND
-              value: "bash /tmp/db-sync.sh"
+              value: "ironic-dbsync"
             - name: DEPENDENCY_JOBS
               value: "ironic-init"
             - name: DEPENDENCY_SERVICE
               value: "mariadb"
             - name: DEPENDENCY_CONFIG
-              value: "/etc/ironic/ironic.conf,/tmp/db-sync.sh"
+              value: "/etc/ironic/ironic.conf"
           volumeMounts:
             - name: ironicconf
               mountPath: /configmaps/ironic.conf
-            - name: dbsyncsh
-              mountPath: /configmaps/db-sync.sh
       volumes:
         - name: ironicconf
           configMap:
             name: ironic-conf
-        - name: dbsyncsh
-          configMap:
-            name: ironic-dbsyncsh
