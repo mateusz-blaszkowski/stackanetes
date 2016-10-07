@@ -98,6 +98,11 @@ kpm.package({
       api_url: "http://glance-api:9292",
     },
 
+    swift: {
+      endpoint_url: "http://rgw:8080",
+      temp_url_key: "glance_temp_url_key",
+    },
+
     neutron: {
       api_url: "http://neutron-server:9696",
       metadata_secret: "password",
@@ -149,6 +154,13 @@ kpm.package({
       file: "configmaps/resolv.conf.yaml.j2",
       template: (importstr "templates/configmaps/resolv.conf.yaml.j2"),
       name: "ironic-resolvconf",
+      type: "configmap",
+    },
+
+    {
+      file: "configmaps/pxelinux-default.yaml.j2",
+      template: (importstr "templates/configmaps/pxelinux-default.yaml.j2"),
+      name: "pxelinux-default",
       type: "configmap",
     },
 

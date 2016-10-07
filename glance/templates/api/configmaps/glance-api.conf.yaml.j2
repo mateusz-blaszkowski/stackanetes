@@ -40,14 +40,25 @@ data:
     [glance_store]
     filesystem_store_datadir = /var/lib/glance/images/
 
-    {% if not ceph.enabled -%}
-    stores = file, http
-    default_store = file
-    {%- else -%}
+    {% if ceph.enabled -%}
     stores = file, http, rbd
     default_store = rbd
     rbd_store_pool = {{ ceph.glance_pool }}
     rbd_store_user = {{ ceph.glance_user }}
     rbd_store_ceph_conf = /etc/ceph/ceph.conf
     rbd_store_chunk_size = 8
+
+    {% elif swift.enabled -%}
+    stores = file, http, swift
+    default_store = swift
+    swift_store_auth_version = 1
+    swift_store_auth_address = {{ swift.auth_address }}
+    swift_store_user = {{ swift.glance_user }}
+    swift_store_key = {{ swift.store_key }}
+    swift_store_container = glance
+    swift_store_create_container_on_put = True
+
+    {%- else -%}
+    stores = file, http
+    default_store = file
     {%- endif -%}

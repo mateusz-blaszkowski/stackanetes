@@ -68,10 +68,12 @@ spec:
             - name: COMMAND
               value: "bash /tmp/ironic-pxe.sh"
             - name: DEPENDENCY_CONFIG
-              value: "/tmp/ironic-pxe.sh,/etc/resolv.conf"
+              value: "/tmp/ironic-pxe.sh,/etc/resolv.conf,/tftpboot/pxelinux.cfg/default"
           volumeMounts:
             - name: ironicpxe
               mountPath: /configmaps/ironic-pxe.sh
+            - name: default
+              mountPath: /configmaps/default
             - name: tftpboot
               mountPath: /tftpboot
             - name: resolvconf
@@ -83,6 +85,9 @@ spec:
         - name: ironicpxe
           configMap:
             name: ironic-pxesh
+        - name: default
+          configMap:
+            name: pxelinux-default
         - name: tftpboot
           emptyDir: {}
         - name: resolvconf

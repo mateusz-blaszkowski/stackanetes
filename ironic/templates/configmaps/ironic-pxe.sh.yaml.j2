@@ -13,14 +13,4 @@ data:
         fi
     done
 
-    mkdir -p /tftpboot/pxelinux.cfg
-    echo "default menu.c32" > /tftpboot/pxelinux.cfg/default
-    echo "prompt 0" >> /tftpboot/pxelinux.cfg/default
-    echo "timeout 5" >> /tftpboot/pxelinux.cfg/default
-    echo "ONTIMEOUT local" >> /tftpboot/pxelinux.cfg/default
-    echo "MENU TITLE Main Menu" >> /tftpboot/pxelinux.cfg/default
-    echo "LABEL local" >> /tftpboot/pxelinux.cfg/default
-    echo "MENU LABEL Boot local hard drive" >> /tftpboot/pxelinux.cfg/default
-    echo "LOCALBOOT 0" >> /tftpboot/pxelinux.cfg/default
-
     /usr/sbin/in.tftpd --verbose --foreground --user ironic --address 0.0.0.0:69 --map-file /map-file /tftpboot

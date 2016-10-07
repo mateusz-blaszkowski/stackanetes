@@ -63,12 +63,12 @@ data:
 
     [glance]
     glance_host = {{ glance.api_url }}
+
     swift_container = glance
     swift_api_version = v1
-    # TODO:
-    # swift_endpoint_url = {{ swift_external_endpoint_uri }}
-    swift_temp_url_key = glance_temp_url_key
-    temp_url_endpoint_type=radosgw
+    swift_endpoint_url = {{ swift.endpoint_url }}
+    swift_temp_url_key = {{ swift.temp_url_key }}
+    temp_url_endpoint_type = radosgw
 
     [neutron]
     url = {{ neutron.api_url }}

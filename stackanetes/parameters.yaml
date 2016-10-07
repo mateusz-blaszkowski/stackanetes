@@ -59,6 +59,12 @@ ceph:
   # Should not be modified after the initial deployment.
   secret_uuid: bbc5b4d5-6fca-407d-807d-06a4f4a7bccb
 
+swift:
+  enabled: false
+  glance_user: "glance:swift"
+  store_key: "glance_store_key"
+  temp_url_key: "glance_temp_url_key"
+
 neutron:
   metadata_secret: password
 
