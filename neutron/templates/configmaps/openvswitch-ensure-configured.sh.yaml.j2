@@ -16,7 +16,9 @@ data:
 
     if [[ ! $(ovs-vsctl list-ports $bridge) =~ $(echo "\<$port\>") ]]; then
         changed=changed
-        #ovs-vsctl --no-wait add-port $bridge $port
+        {% if ironic.enabled %}
+        ovs-vsctl --no-wait add-port $bridge $port
+        {% endif %}
     fi
 
     echo $changed
