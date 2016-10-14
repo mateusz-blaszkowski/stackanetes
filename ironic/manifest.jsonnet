@@ -31,6 +31,7 @@ kpm.package({
         conductor: "10.91.96.87:5000/debian-source-ironic-conductor:mateuszb-ironic",
         compute: "10.91.96.87:5000/debian-source-nova-compute-ironic:mateuszb-ironic",
         ironic_pxe: "10.91.96.87:5000/debian-source-ironic-pxe:mateuszb-ironic",
+        ironic_http: "nginx:alpine",
       },
     },
 
@@ -39,6 +40,7 @@ kpm.package({
 
       port: {
         api: 6385,
+        http: 8082,
       },
 
       api_url: "http://%s:6385/v1" % $.variables.network.ip_address,
@@ -158,9 +160,23 @@ kpm.package({
     },
 
     {
+      file: "configmaps/nginx-default.conf.yaml.j2",
+      template: (importstr "templates/configmaps/nginx-default.conf.yaml.j2"),
+      name: "nginx-defaultconf",
+      type: "configmap",
+    },
+
+    {
       file: "configmaps/pxelinux-default.yaml.j2",
       template: (importstr "templates/configmaps/pxelinux-default.yaml.j2"),
       name: "pxelinux-default",
+      type: "configmap",
+    },
+
+    {
+      file: "configmaps/map-file.yaml.j2",
+      template: (importstr "templates/configmaps/map-file.yaml.j2"),
+      name: "map-file",
       type: "configmap",
     },
 

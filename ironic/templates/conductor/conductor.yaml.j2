@@ -44,8 +44,8 @@ spec:
           volumeMounts:
             - name: ironicconf
               mountPath: /configmaps/ironic.conf
-            - name: tftpboot
-              mountPath: /tftpboot
+            - name: pxeboot
+              mountPath: /pxeboot
             - name: resolvconf
               mountPath: /configmaps/resolv.conf
         - name: ironic-pxe
@@ -68,16 +68,33 @@ spec:
             - name: COMMAND
               value: "bash /tmp/ironic-pxe.sh"
             - name: DEPENDENCY_CONFIG
-              value: "/tmp/ironic-pxe.sh,/etc/resolv.conf,/tftpboot/pxelinux.cfg/default"
+              value: "/tmp/ironic-pxe.sh,/etc/resolv.conf,/pxeboot/tftpboot/pxelinux.cfg/default,/map-file"
           volumeMounts:
             - name: ironicpxe
               mountPath: /configmaps/ironic-pxe.sh
             - name: default
               mountPath: /configmaps/default
-            - name: tftpboot
-              mountPath: /tftpboot
+            - name: mapfile
+              mountPath: /configmaps/map-file
+            - name: pxeboot
+              mountPath: /pxeboot
             - name: resolvconf
               mountPath: /configmaps/resolv.conf
+        - name: ironic-http
+          image: {{ deployment.image.ironic_http }}
+          imagePullPolicy: Always
+          # TODO(DTadrzak): it must be removed in future
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: pxeboot
+              mountPath: /pxeboot
+            - name: resolvconf
+              mountPath: /configmaps/resolv.conf
+            - name: defaultconf
+              mountPath: /etc/nginx/conf.d/
+          ports:
+            - containerPort: {{ network.port.http }}
       volumes:
         - name: ironicconf
           configMap:
@@ -88,8 +105,14 @@ spec:
         - name: default
           configMap:
             name: pxelinux-default
-        - name: tftpboot
+        - name: pxeboot
           emptyDir: {}
         - name: resolvconf
           configMap:
             name: ironic-resolvconf
+        - name: defaultconf
+          configMap:
+            name: nginx-defaultconf
+        - name: mapfile
+          configMap:
+            name: map-file

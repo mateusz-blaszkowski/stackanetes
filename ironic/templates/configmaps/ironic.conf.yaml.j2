@@ -37,7 +37,27 @@ data:
     store_data = swift
 
     [pxe]
+    ipxe_enabled=True
+    pxe_bootfile_name=undionly.kpxe
+    uefi_pxe_bootfile_name=ipxe.efi
+    pxe_config_template=$pybasedir/drivers/modules/ipxe_config.template
+    uefi_pxe_config_template=$pybasedir/drivers/modules/ipxe_config.template
     tftp_server = {{ network.ip_address }}
+    tftp_master_path = /pxeboot/tftpboot
+    tftp_root=/pxeboot/tftpboot
+    pxe_append_params = ipa-debug=1
+
+    [deploy]
+    http_root=/pxeboot/httpboot
+
+    {% if network.external_ips|length > 0 %}
+    http_url=http://{{ network.external_ips[0] }}:{{ network.port.http }}
+    {% else %}
+    http_url=http://{{ network.ip_address }}:{{ network.port.http }}
+    {% endif %}
+
+
+
 
     [conductor]
     api_url = http://{{ network.ip_address }}:{{ network.port.api }}

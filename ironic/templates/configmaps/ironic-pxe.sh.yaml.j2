@@ -5,12 +5,18 @@ data:
     #!/bin/bash
     set -ex
 
+    mkdir -p /pxeboot/tftpboot
+    mkdir -p /pxeboot/httpboot
+
     for pxe_file in /var/lib/tftpboot/pxelinux.0 /var/lib/tftpboot/chain.c32 /usr/lib/syslinux/pxelinux.0 \
                     /usr/lib/syslinux/chain.c32 /usr/lib/PXELINUX/pxelinux.0 \
-                    /usr/lib/syslinux/modules/bios/chain.c32; do
+                    /usr/lib/syslinux/modules/bios/chain.c32 /usr/lib/ipxe/undionly.kpxe \
+                    /usr/lib/ipxe/ipxe.efi /usr/lib/syslinux/modules/bios/ldlinux.c32 ; do
         if [[ -e "$pxe_file" ]]; then
-            cp "$pxe_file" /tftpboot
+            cp "$pxe_file" /pxeboot/tftpboot
         fi
     done
 
-    /usr/sbin/in.tftpd --verbose --foreground --user ironic --address 0.0.0.0:69 --map-file /map-file /tftpboot
+    chmod 755 /pxeboot/tftpboot
+
+    /usr/sbin/in.tftpd --verbose --foreground --user ironic --address 0.0.0.0:69 --map-file /map-file /pxeboot/tftpboot

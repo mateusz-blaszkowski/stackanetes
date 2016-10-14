@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  map-file: |+
+    re ^(/tftpboot/) /pxeboot/tftpboot/\2
+    re ^/tftpboot/ /pxeboot/tftpboot/
+    re ^(^/) /pxeboot/tftpboot/\1
+    re ^([^/]) /pxeboot/tftpboot/\1
+

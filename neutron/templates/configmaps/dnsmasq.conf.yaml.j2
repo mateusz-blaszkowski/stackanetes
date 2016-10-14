@@ -3,3 +3,7 @@ kind: ConfigMap
 data:
   dnsmasq.conf: |+
     log-facility=-
+
+    {% if ironic.enabled %}
+    dhcp-userclass=set:ipxe,iPXE
+    {% endif %}
