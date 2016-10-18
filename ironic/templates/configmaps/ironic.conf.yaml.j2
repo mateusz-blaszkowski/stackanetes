@@ -10,7 +10,7 @@ data:
     listen_address = {{ network.ip_address }}
     rpc_thread_pool_size = 512
     executor_thread_pool_size = 512
-    enabled_drivers = pxe_ipmitool,agent_ipmitool,agent_pyghmi,fake
+    enabled_drivers = pxe_ipmitool,agent_ipmitool_socat,agent_pyghmi,fake
 
     [api]
     api_workers=128
@@ -23,9 +23,6 @@ data:
     admin_username = {{ keystone.ironic_user }}
     admin_password = {{ keystone.ironic_password }}
     os_tenant_name = service
-
-    [discovery]
-    enroll_node_driver = agent_ipmitool
 
     [firewall]
     manage_firewall = False
@@ -45,7 +42,7 @@ data:
     tftp_server = {{ network.ip_address }}
     tftp_master_path = /pxeboot/tftpboot
     tftp_root=/pxeboot/tftpboot
-    pxe_append_params = ipa-debug=1
+    pxe_append_params = ipa-debug=1 nofb nomodeset vga=normal console=ttyS0,115200n8
 
     [deploy]
     http_root=/pxeboot/httpboot
@@ -55,9 +52,6 @@ data:
     {% else %}
     http_url=http://{{ network.ip_address }}:{{ network.port.http }}
     {% endif %}
-
-
-
 
     [conductor]
     api_url = http://{{ network.ip_address }}:{{ network.port.api }}
@@ -101,7 +95,3 @@ data:
     rabbit_password = {{ rabbitmq.admin_password }}
     rabbit_ha_queues = true
     rabbit_hosts = {{ rabbitmq.address }}
-
-    [console]
-    terminal = ironic-console-server
-
