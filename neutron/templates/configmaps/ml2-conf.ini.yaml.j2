@@ -14,9 +14,6 @@ data:
     mechanism_drivers = openvswitch,l2population
     {% endif %}
 
-    [ml2_type_vlan]
-    network_vlan_ranges =
-
     [ml2_type_flat]
     flat_networks = physnet1
 
@@ -25,13 +22,12 @@ data:
     vxlan_group = 239.1.1.1
 
     [securitygroup]
+    enable_security_group = True
     {% if ironic.enabled %}
     firewall_driver = neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
-    enable_security_group = True
     {% else %}
     # TODO(DTadrzak): FIX ME
     firewall_driver = noop
-    enable_security_group = False
     {% endif %}
 
     [agent]
