@@ -37,13 +37,6 @@ kpm.package({
         libvirt: $.variables.deployment.image.base % "nova-libvirt",
         post: $.variables.deployment.image.base % "kolla-toolbox",
       },
-
-      ironic_compute: {
-        enabled: false,
-        ironic_user: "ironic",
-        ironic_password: "password",
-        api_url: "http://ironic-api:6385/v1",
-      },
     },
 
     network: {
@@ -108,6 +101,10 @@ kpm.package({
       nova_user: "nova",
       nova_password: "password",
       nova_region_name: "RegionOne",
+
+      ironic_user: "ironic",
+      ironic_password: "password",
+      ironic_region_name: "RegionOne",
     },
 
     rabbitmq: {
@@ -124,6 +121,13 @@ kpm.package({
       cinder_keyring: "",
       nova_pool: "vms",
       secret_uuid: "",
+    },
+
+    ironic_compute: {
+      enabled: false,
+      ironic_user: "ironic",
+      ironic_password: "password",
+      api_url: "http://ironic-api:6385/v1",
     },
 
     glance: {
@@ -298,7 +302,7 @@ kpm.package({
 
     // Daemonsets.
 
-    if $.variables.deployment.ironic_compute.enabled == false then
+    if $.variables.ironic_compute.enabled == false then [
       {
         file: "compute/compute.yaml.j2",
         template: (importstr "templates/compute/compute.yaml.j2"),
@@ -319,6 +323,7 @@ kpm.package({
         name: "nova-drain",
         type: "daemonset",
       },
+    ],
 
     // Services.
     {

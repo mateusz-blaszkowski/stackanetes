@@ -84,7 +84,7 @@ kpm.package({
     swift: {
       enabled: false,
       auth_address: "http://10.91.62.52:80/auth/1.0",
-      glance_user: "glance:swift",
+      store_user: "glance:swift",
       store_key: "glance_store_key",
     },
 

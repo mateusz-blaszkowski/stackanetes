@@ -7,11 +7,7 @@ spec:
         app: compute-node
     spec:
       nodeSelector:
-        # TODO:
-        # {{ deployment.compute_node_label }}: enabled
-        mateuszb: enabled
-      securityContext:
-        runAsUser: 0
+        {{ deployment.control_node_label }}: enabled
       hostNetwork: true
       hostPID: true
       dnsPolicy: ClusterFirst
@@ -19,8 +15,6 @@ spec:
         - name: nova-compute-ironic
           image: {{ deployment.image.compute }}
           imagePullPolicy: Always
-          securityContext:
-            privileged: true
           env:
             - name: INTERFACE_NAME
               value: {{ network.minion_interface_name }}
@@ -39,21 +33,21 @@ spec:
             - name: DEPENDENCY_SERVICE
               value: "keystone-api,glance-api,nova-api"
             - name: DEPENDENCY_CONFIG
-              value: "/etc/nova/nova.conf,/etc/resolv.conf"
+              value: "/etc/nova/nova.conf"
           volumeMounts:
             - name: novaconf
               mountPath: /configmaps/nova.conf
             - name: resolvconf
-              mountPath: /configmaps/resolv.conf
+              mountPath: /etc/resolv.conf
+              subPath: resolv.conf
             - name: varlibnovaironic
               mountPath: /var/lib/nova
       volumes:
         - name: novaconf
           configMap:
-            name: ironic-novaconf
+            name: nova-novaconf
         - name: resolvconf
           configMap:
             name: ironic-resolvconf
         - name: varlibnovaironic
-          hostPath:
-            path: /var/lib/nova/ironic
+          emptyDir: {}

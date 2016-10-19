@@ -40,14 +40,15 @@ spec:
             - name: DEPENDENCY_SERVICE
               value: "rabbitmq"
             - name: DEPENDENCY_CONFIG
-              value: "/etc/ironic/ironic.conf,/etc/resolv.conf"
+              value: "/etc/ironic/ironic.conf"
           volumeMounts:
             - name: ironicconf
               mountPath: /configmaps/ironic.conf
             - name: pxeboot
               mountPath: /pxeboot
             - name: resolvconf
-              mountPath: /configmaps/resolv.conf
+              mountPath: /etc/resolv.conf
+              subPath: resolv.conf
         - name: ironic-pxe
           image: {{ deployment.image.ironic_pxe }}
           imagePullPolicy: Always
@@ -68,7 +69,7 @@ spec:
             - name: COMMAND
               value: "bash /tmp/ironic-pxe.sh"
             - name: DEPENDENCY_CONFIG
-              value: "/tmp/ironic-pxe.sh,/etc/resolv.conf,/pxeboot/tftpboot/pxelinux.cfg/default,/map-file"
+              value: "/tmp/ironic-pxe.sh,/pxeboot/tftpboot/pxelinux.cfg/default,/map-file"
           volumeMounts:
             - name: ironicpxe
               mountPath: /configmaps/ironic-pxe.sh
@@ -79,7 +80,8 @@ spec:
             - name: pxeboot
               mountPath: /pxeboot
             - name: resolvconf
-              mountPath: /configmaps/resolv.conf
+              mountPath: /etc/resolv.conf
+              subPath: resolv.conf
         - name: ironic-http
           image: {{ deployment.image.ironic_http }}
           imagePullPolicy: Always
@@ -90,7 +92,8 @@ spec:
             - name: pxeboot
               mountPath: /pxeboot
             - name: resolvconf
-              mountPath: /configmaps/resolv.conf
+              mountPath: /etc/resolv.conf
+              subPath: resolv.conf
             - name: defaultconf
               mountPath: /etc/nginx/conf.d/
           ports:

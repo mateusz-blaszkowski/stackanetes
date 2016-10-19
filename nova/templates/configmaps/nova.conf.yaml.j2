@@ -29,7 +29,7 @@ data:
     linuxnet_interface_driver = openvswitch
     allow_resize_to_same_host = true
 
-    {% if deployment.ironic_compute.enabled %}
+    {% if ironic_compute.enabled %}
     firewall_driver = nova.virt.firewall.NoopFirewallDriver
     compute_driver = ironic.IronicDriver
     scheduler_host_manager = ironic_host_manager
@@ -40,12 +40,11 @@ data:
     scheduler_host_subset_size = 9999999
 
     [ironic]
-    admin_username = ironic
-    admin_password = IRONIC_PASSWORD
-    admin_url = {{ keystone.auth_url }}
-    # TODO:
-    # admin_tenant_name=service
-    api_endpoint={{ deployment.ironic_compute.api_url }}
+    admin_username = {{ keystone.ironic_user }}
+    admin_password = {{ keystone.ironic_password }}
+    admin_url = {{ keystone.auth_url }}/v2.0
+    admin_tenant_name = service
+    api_endpoint={{ ironic_compute.api_url }}
 
     {% else %}
     # TODO(DTadrzak): FIX ME
@@ -114,6 +113,7 @@ data:
     connection = mysql+pymysql://{{ database.nova_user }}:{{ database.nova_password }}@{{ database.address }}/{{ database.nova_database_name }}
     max_pool_size = {{ misc.workers }}
     max_overflow  = {{ misc.workers }}
+    max_retries = -1
 
     [api_database]
     connection = mysql+pymysql://{{ database.nova_user }}:{{ database.nova_password }}@{{ database.address }}/{{ database.nova_api_database_name }}

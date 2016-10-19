@@ -13,7 +13,7 @@ data:
     enabled_drivers = pxe_ipmitool,agent_ipmitool_socat,agent_pyghmi,fake
 
     [api]
-    api_workers=128
+    api_workers = {{ misc.workers }}
 
     [ironic]
     os_auth_url = {{ keystone.auth_url }}
@@ -34,14 +34,14 @@ data:
     store_data = swift
 
     [pxe]
-    ipxe_enabled=True
-    pxe_bootfile_name=undionly.kpxe
-    uefi_pxe_bootfile_name=ipxe.efi
-    pxe_config_template=$pybasedir/drivers/modules/ipxe_config.template
-    uefi_pxe_config_template=$pybasedir/drivers/modules/ipxe_config.template
+    ipxe_enabled = True
+    pxe_bootfile_name = undionly.kpxe
+    uefi_pxe_bootfile_name = ipxe.efi
+    pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
+    uefi_pxe_config_template = $pybasedir/drivers/modules/ipxe_config.template
     tftp_server = {{ network.ip_address }}
     tftp_master_path = /pxeboot/tftpboot
-    tftp_root=/pxeboot/tftpboot
+    tftp_root = /pxeboot/tftpboot
     pxe_append_params = ipa-debug=1 nofb nomodeset vga=normal console=ttyS0,115200n8
 
     [deploy]
@@ -64,6 +64,7 @@ data:
 
     [database]
     connection = mysql+pymysql://{{ database.ironic_user }}:{{ database.ironic_password }}@{{ database.address }}/{{ database.ironic_database_name }}
+    max_retries = -1
 
     [keystone_authtoken]
     auth_url = {{ keystone.auth_url }}

@@ -31,7 +31,7 @@ kpm.package({
         conductor: "10.91.96.87:5000/debian-source-ironic-conductor:mateuszb-ironic",
         compute: "10.91.96.87:5000/debian-source-nova-compute-ironic:mateuszb-ironic",
         ironic_pxe: "10.91.96.87:5000/debian-source-ironic-pxe:mateuszb-ironic",
-        ironic_http: "nginx:alpine",
+        ironic_http: "nginx:1.11.5-alpine",
       },
     },
 
@@ -177,13 +177,6 @@ kpm.package({
       file: "configmaps/map-file.yaml.j2",
       template: (importstr "templates/configmaps/map-file.yaml.j2"),
       name: "map-file",
-      type: "configmap",
-    },
-
-    {
-      file: "configmaps/nova.conf.yaml.j2",
-      template: (importstr "templates/configmaps/nova.conf.yaml.j2"),
-      name: "ironic-novaconf",
       type: "configmap",
     },
 

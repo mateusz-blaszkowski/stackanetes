@@ -7,6 +7,7 @@ data:
     type_drivers = flat
     tenant_network_types = flat
     mechanism_drivers = openvswitch
+
     {% else %}
     # Changing type_drivers after bootstrap can lead to database inconsistencies
     type_drivers = flat,vlan,vxlan
