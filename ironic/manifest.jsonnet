@@ -20,16 +20,15 @@ kpm.package({
       replicas: 1,
 
       image: {
-        base: "quay.io/stackanetes/stackanetes-%s:barcelona",
+        base: "quay.io/stackanetes/stackanetes-%s:newton",
 
         init: $.variables.deployment.image.base % "kolla-toolbox",
         post: $.variables.deployment.image.base % "kolla-toolbox",
-        # TODO:
-        api: "10.91.96.87:5000/debian-source-ironic-api:mateuszb-ironic",
-        db_sync: "10.91.96.87:5000/debian-source-ironic-api:mateuszb-ironic",
-        conductor: "10.91.96.87:5000/debian-source-ironic-conductor:mateuszb-ironic",
-        compute: "10.91.96.87:5000/debian-source-nova-compute-ironic:mateuszb-ironic",
-        ironic_pxe: "10.91.96.87:5000/debian-source-ironic-pxe:mateuszb-ironic",
+        api: $.variables.deployment.image.base % "ironic-api",
+        db_sync: $.variables.deployment.image.base % "ironic-api",
+        conductor: $.variables.deployment.image.base % "ironic-conductor",
+        compute: $.variables.deployment.image.base % "nova-compute-ironic",
+        ironic_pxe: $.variables.deployment.image.base % "ironic-pxe",
         ironic_http: "nginx:1.11.5-alpine",
       },
     },
