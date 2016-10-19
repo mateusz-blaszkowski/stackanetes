@@ -17,7 +17,6 @@ kpm.package({
   variables: {
     deployment: {
       control_node_label: "openstack-control-plane",
-      compute_node_label: "openstack-ironic-compute-node",
       replicas: 1,
 
       image: {
@@ -217,12 +216,11 @@ kpm.package({
       type: "deployment",
     },
 
-    // Daemonsets.
     {
-      file: "compute/daemonset.yaml.j2",
-      template: (importstr "templates/compute/daemonset.yaml.j2"),
+      file: "compute/compute.yaml.j2",
+      template: (importstr "templates/compute/compute.yaml.j2"),
       name: "nova-compute-ironic",
-      type: "daemonset",
+      type: "deployment",
     },
 
     // Services.

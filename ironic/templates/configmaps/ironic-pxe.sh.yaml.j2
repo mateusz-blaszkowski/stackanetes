@@ -17,6 +17,8 @@ data:
         fi
     done
 
-    chmod 755 /pxeboot/tftpboot
+    chown -R ironic:ironic /pxeboot/tftpboot
+    chown -R ironic:ironic /pxeboot/httpboot
+    chmod -R 755 /pxeboot/tftpboot
 
     /usr/sbin/in.tftpd --verbose --foreground --user ironic --address 0.0.0.0:69 --map-file /map-file /pxeboot/tftpboot
