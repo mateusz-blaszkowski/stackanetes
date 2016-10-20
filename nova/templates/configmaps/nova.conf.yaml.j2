@@ -38,6 +38,8 @@ data:
     scheduler_use_baremetal_filters = True
     scheduler_tracks_instance_changes = False
     scheduler_host_subset_size = 9999999
+    scheduler_max_attempts = 10
+    max_concurrent_builds = 50
 
     [ironic]
     admin_username = {{ keystone.ironic_user }}
