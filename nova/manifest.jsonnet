@@ -124,10 +124,8 @@ kpm.package({
       secret_uuid: "",
     },
 
-    ironic_compute: {
+    ironic: {
       enabled: false,
-      ironic_user: "ironic",
-      ironic_password: "password",
       api_url: "http://ironic-api:6385/v1",
     },
 
@@ -303,7 +301,7 @@ kpm.package({
 
     // Daemonsets.
 
-    if $.variables.ironic_compute.enabled == false then [
+    if $.variables.ironic.enabled == false then [
       {
         file: "compute/compute.yaml.j2",
         template: (importstr "templates/compute/compute.yaml.j2"),

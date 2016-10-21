@@ -81,9 +81,12 @@ kpm.package({
       glance_keyring: "",
     },
 
-    swift: {
+    ironic: {
       enabled: false,
-      auth_address: "http://10.91.62.52:80/auth/1.0",
+    },
+
+    swift: {
+      auth_address: "http://rgw:6000/auth/1.0",
       store_user: "glance:swift",
       store_key: "glance_store_key",
     },

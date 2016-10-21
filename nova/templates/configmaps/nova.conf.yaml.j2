@@ -22,7 +22,7 @@ data:
     linuxnet_interface_driver = openvswitch
     allow_resize_to_same_host = True
 
-    {% if ironic_compute.enabled %}
+    {% if ironic.enabled %}
     firewall_driver = nova.virt.firewall.NoopFirewallDriver
     compute_driver = ironic.IronicDriver
     scheduler_host_manager = ironic_host_manager
@@ -38,7 +38,7 @@ data:
     admin_password = {{ keystone.ironic_password }}
     admin_url = {{ keystone.auth_url }}/v2.0
     admin_tenant_name = service
-    api_endpoint={{ ironic_compute.api_url }}
+    api_endpoint={{ ironic.api_url }}
 
     {% else %}
     firewall_driver = nova.virt.firewall.IptablesFirewallDriver

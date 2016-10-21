@@ -59,6 +59,9 @@ ceph:
   # Should not be modified after the initial deployment.
   secret_uuid: bbc5b4d5-6fca-407d-807d-06a4f4a7bccb
 
+ironic:
+  enabled: false
+
 swift:
   enabled: false
   glance_user: "glance:swift"

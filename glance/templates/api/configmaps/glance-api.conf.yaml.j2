@@ -48,7 +48,7 @@ data:
     rbd_store_ceph_conf = /etc/ceph/ceph.conf
     rbd_store_chunk_size = 8
 
-    {% elif swift.enabled -%}
+    {% elif ironic.enabled -%}
     stores = file, http, swift
     default_store = swift
     swift_store_auth_version = 1
