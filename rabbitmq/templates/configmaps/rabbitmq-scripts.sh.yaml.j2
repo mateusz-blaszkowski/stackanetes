@@ -26,7 +26,6 @@ data:
     marker-state() {
         if [[ ! -f $MARKER_PATH ]]; then
             echo "missing"
-            date +%s > /tmp/rabbit-startup-marker
             return 0
         fi
         local marker_time
@@ -114,6 +113,13 @@ data:
         fi
         return 0
     }
+
+    case $(marker-state) in
+        missing)
+            echo "$LP Startup marker missing, probably probe was executed too early"
+            exit 1
+            ;;
+    esac
     
     if main; then
         rc=0
