@@ -54,12 +54,14 @@ ceph:
   glance_user: "glance"
   glance_pool: "images"
   glance_keyring: ""
-  rgw_user: "ironic"
-  admin_keyring: ""
   nova_pool: "vms"
   # Random uuid used for Nova / Cinder communication.
   # Should not be modified after the initial deployment.
   secret_uuid: bbc5b4d5-6fca-407d-807d-06a4f4a7bccb
+  # rgw_user and admin_keyring are only needed when Ironic
+  # is enabled. Shouldn't be provided otherwise.
+  rgw_user: "ironic"
+  admin_keyring: ""
 
 rgw:
   user: ""
