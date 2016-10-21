@@ -4,14 +4,11 @@ data:
   nova.conf: |+
     [DEFAULT]
     debug = {{ misc.debug }}
-    # TODO(DTadrzak): FIX ME
-    vif_plugging_is_fatal = False
-    vif_plugging_timeout = 10
-    default_ephemeral_format = ext3
+    default_ephemeral_format = ext4
+    ram_allocation_ratio=1.0
     disk_allocation_ratio=1.0
-    cpu_allocation_ratio=8.0
+    cpu_allocation_ratio=3.0
 
-    api_paste_config = /etc/nova/api-paste.ini
     state_path = /var/lib/nova
 
     osapi_compute_listen = {{ network.ip_address }}
@@ -21,23 +18,18 @@ data:
     workers = {{ misc.workers }}
     metadata_workers = {{ misc.workers }}
 
-    notification_driver = noop
-
     use_neutron = True
-    security_group_api = neutron
-    network_api_class = nova.network.neutronv2.api.API
     linuxnet_interface_driver = openvswitch
-    allow_resize_to_same_host = true
+    allow_resize_to_same_host = True
 
     {% if ironic_compute.enabled %}
     firewall_driver = nova.virt.firewall.NoopFirewallDriver
     compute_driver = ironic.IronicDriver
     scheduler_host_manager = ironic_host_manager
-    ram_allocation_ratio = 1.0
     reserved_host_memory_mb = 0
     scheduler_use_baremetal_filters = True
     scheduler_tracks_instance_changes = False
-    scheduler_host_subset_size = 9999999
+    host_subset_size = 9999999
     scheduler_max_attempts = 10
     max_concurrent_builds = 50
 
@@ -49,26 +41,26 @@ data:
     api_endpoint={{ ironic_compute.api_url }}
 
     {% else %}
-    # TODO(DTadrzak): FIX ME
-    firewall_driver = nova.virt.firewall.NoopFirewallDriver
+    firewall_driver = nova.virt.firewall.IptablesFirewallDriver
     compute_driver = libvirt.LibvirtDriver
     scheduler_host_manager = host_manager
-    ram_allocation_ratio = 1.0
     reserved_host_memory_mb = 512
     scheduler_use_baremetal_filters = False
     scheduler_tracks_instance_changes = True
-    scheduler_host_subset_size = 30
+    host_subset_size = 30
     {% endif %}
 
     # Though my_ip is not used directly, lots of other variables use $my_ip
     my_ip = {{ network.ip_address }}
+
+    transport_url = rabbit://{{ rabbitmq.admin_user }}:{{ rabbitmq.admin_password }}@{{ rabbitmq.address }}:{{ rabbitmq.port }}
 
     [vnc]
     novncproxy_host = {{ network.ip_address }}
     novncproxy_port = {{ network.port.novncproxy }}
     vncserver_listen = 0.0.0.0
     vncserver_proxyclient_address = {{ network.ip_address }}
-    vnc_enabled = True
+
     {% if network.ingress.enabled %}
     novncproxy_base_url = http://{{ network.ingress.named_host.novncproxy }}:{{ network.ingress.port }}/vnc_auto.html
     {% elif network.external_ips|length > 0 %}
@@ -77,11 +69,6 @@ data:
     novncproxy_base_url = http://{{ network.ip_address }}:{{ network.port.novncproxy }}/vnc_auto.html
     {% endif %}
 
-    [oslo_messaging_rabbit]
-    rabbit_userid = {{ rabbitmq.admin_user }}
-    rabbit_password = {{ rabbitmq.admin_password }}
-    rabbit_ha_queues = true
-    rabbit_hosts = {{ rabbitmq.address }}
 
     [oslo_concurrency]
     lock_path = /var/lib/nova/tmp
@@ -98,13 +85,12 @@ data:
 
     [neutron]
     url = {{ neutron.api_url }}
-    auth_strategy = keystone
 
     metadata_proxy_shared_secret = {{ neutron.metadata_secret }}
     service_metadata_proxy = True
 
     auth_url = {{ keystone.auth_url }}
-    auth_plugin = password
+    auth_type = password
     project_domain_name = default
     user_domain_id = default
     project_name = service
@@ -121,6 +107,7 @@ data:
     connection = mysql+pymysql://{{ database.nova_user }}:{{ database.nova_password }}@{{ database.address }}/{{ database.nova_api_database_name }}
     max_pool_size = {{ misc.workers }}
     max_overflow  = {{ misc.workers }}
+    max_retries = -1
 
     [keystone_authtoken]
     auth_uri = {{ keystone.auth_uri }}
@@ -145,19 +132,16 @@ data:
     rbd_secret_uuid = {{ ceph.secret_uuid }}
     disk_cachemodes="network=writeback"
     hw_disk_discard = unmap
-    inject_password = false
-    inject_key = false
-    inject_partition = -2
     {% endif %}
 
     [upgrade_levels]
     compute = auto
 
-    [serial_console]
-    enabled = False
-
     [cache]
-    enabled = true
+    enabled = True
     backend = oslo_cache.memcache_pool
     memcache_servers = {{ memcached.address }}
-    
+
+    [wsgi]
+    api_paste_config = /etc/nova/api-paste.ini
+

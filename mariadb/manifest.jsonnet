@@ -25,6 +25,11 @@ kpm.package({
 
     network: {
       ip_address: "{{ .IP }}",
+      dns:  {
+        servers: ["10.3.0.10"],
+        kubernetes_domain: "cluster.local",
+        other_domains: "",
+      },
 
       port: {
         mariadb: 3306,
@@ -128,9 +133,23 @@ kpm.package({
     },
 
     {
+      file: "configmaps/replicas.py.yaml.j2",
+      template: (importstr "templates/configmaps/replicas.py.yaml.j2"),
+      name: "mariadb-replicas",
+      type: "configmap",
+    },
+
+    {
       file: "configmaps/wsrep.cnf.yaml.j2",
       template: (importstr "templates/configmaps/wsrep.cnf.yaml.j2"),
       name: "mariadb-wsrep",
+      type: "configmap",
+    },
+
+    {
+      file: "configmaps/mariadb-readiness.py.yaml.j2",
+      template: (importstr "templates/configmaps/mariadb-readiness.py.yaml.j2"),
+      name: "mariadb-readiness",
       type: "configmap",
     },
 

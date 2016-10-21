@@ -4,9 +4,6 @@ spec:
   template:
     spec:
       restartPolicy: OnFailure
-      # TODO(DTadrzak): it must be removed in future
-      securityContext:
-        runAsUser: 0
       containers:
         - name: cinder-db-sync
           image: {{ deployment.image.db_sync }}
@@ -29,12 +26,13 @@ spec:
             - name: DEPENDENCY_SERVICE
               value: "mariadb"
             - name: DEPENDENCY_CONFIG
-              value: "/etc/cinder/cinder.conf,/tmp/db-sync.sh"
+              value: "/etc/cinder/cinder.conf"
           volumeMounts:
             - name: cinderconf
               mountPath: /configmaps/cinder.conf
             - name: dbsyncsh
-              mountPath: /configmaps/db-sync.sh
+              mountPath: /tmp/db-sync.sh
+              subPath: db-sync.sh
       volumes:
         - name: cinderconf
           configMap:
