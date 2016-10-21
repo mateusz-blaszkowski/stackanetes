@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  ceph.client.admin.keyring: |+
+    [client.admin]
+        key = {{ ceph.admin_keyring }}
+

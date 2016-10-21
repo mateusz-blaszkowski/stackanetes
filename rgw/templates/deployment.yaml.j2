@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+spec:
+  replicas: {{ deployment.replicas }}
+  template:
+    metadata:
+      labels:
+        app: rgw
+    spec:
+      nodeSelector:
+        {{ deployment.control_node_label }}: enabled
+      containers:
+        - name: rgw
+          image: {{ deployment.image.rgw }}
+          imagePullPolicy: Always
+          env:
+            - name: CEPH_DAEMON
+              value: "rgw"
+            - name: RGW_CIVETWEB_PORT
+              value: "{{ network.port.rgw }}"
+            - name: INTERFACE_NAME
+              value: "eth0"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          command: ["bash", "/tmp/init.sh"]
+          ports:
+            - containerPort: {{ network.port.rgw }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ network.port.rgw }}
+          volumeMounts:
+            - name: cephconf
+              mountPath: /etc/ceph/ceph.conf
+              subPath: ceph.conf
+            - name: cephclientadminkeyring
+              mountPath: /etc/ceph/ceph.client.admin.keyring
+              subPath: ceph.client.admin.keyring
+            - name: initsh
+              mountPath: /tmp/init.sh
+              subPath: init.sh
+      volumes:
+        - name: cephconf
+          configMap:
+            name: rgw-cephconf
+        - name: cephclientadminkeyring
+          configMap:
+            name: rgw-cephclientadminkeyring
+        - name: initsh
+          configMap:
+            name: rgw-initsh
